@@ -1,9 +1,19 @@
 import mongoose from 'mongoose';
 
+
 const feedbackSchema = new mongoose.Schema({
-    message: {
+    device_id: {
         type: String,
-        required: true, 
+        required: true,
+    },
+    feedback: {
+        type: String,
+        required: true,
+    },
+    rating: {
+        type: String,
+        enum: ['very dissatisfied', 'dissatisfied', 'neutral', 'satisfied', 'very satisfied'],
+        default: 'neutral',
     },
 }, { timestamps: true });
 
