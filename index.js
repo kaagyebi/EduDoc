@@ -1,8 +1,9 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import feedbackRouter from './routes/feedback_routes.js';
-import dotenv from 'dotenv';
+import { feedbackRouter } from './routes/feedback_routes.js';
 import cors from 'cors';
+import connectDB from './config/db.js';
 
 dotenv.config();
     
@@ -14,9 +15,7 @@ app.use(express.json());
 
 const startServer = async () => {
     try {
-        const mongo_URI = process.env.MONGO_URI;
-        await mongoose.connect(mongo_URI);
-        console.log("Successfully connected to MongoDB.");
+        await connectDB();
 
         app.use('/api/feedback', feedbackRouter);
 
