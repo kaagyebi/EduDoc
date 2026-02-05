@@ -3,7 +3,7 @@ import Feedback from "../models/feedback_model.js";
 // Submit feedback
 export const submitFeedback = async (req, res) => {
     try {
-        const { device_id, feedback, rating } = req.body;
+        const { device_id, feedback, rating, source } = req.body;
 
         // Validate presence of auto-generated device_id and feedback
         if (!device_id || !feedback) {
@@ -14,6 +14,7 @@ export const submitFeedback = async (req, res) => {
             device_id,
             feedback,
             rating,
+            source: source || 'document', // Default to 'document' if not specified
         });
 
         await newFeedback.save();
