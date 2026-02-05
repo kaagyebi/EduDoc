@@ -8,9 +8,11 @@ const feedbackSchema = new mongoose.Schema({
     feedback: {
         type: String,
         required: true, 
+        required: true, 
     },
     rating: {
         type: String,
+        required: false,
         required: false,
         enum: ['very dissatisfied', 'dissatisfied', 'neutral', 'satisfied', 'very satisfied'],
         default: 'neutral',
