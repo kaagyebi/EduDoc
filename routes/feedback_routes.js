@@ -4,7 +4,8 @@ import {
     getRatingsDistribution, 
     getVolumeTrend, 
     getAllFeedback, 
-    getRecentFeedback 
+    getRecentFeedback,
+    getSourceDistribution 
 } from "../controllers/feedback_controller.js";
 import express from 'express';
 
@@ -17,5 +18,6 @@ feedbackRouter.post('/submit', submitFeedback);
 feedbackRouter.get('/dashboard-stats', getDashboardStats);
 feedbackRouter.get('/ratings-distribution', getRatingsDistribution);
 feedbackRouter.get('/volume-trend', getVolumeTrend);
+feedbackRouter.get('/source-distribution', getSourceDistribution);
 feedbackRouter.get('/recent', getRecentFeedback);
 feedbackRouter.get('/', getAllFeedback);

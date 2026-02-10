@@ -230,12 +230,13 @@ export const getAllFeedback = async (req, res) => {
             ];
         }
         
-        if (rating) {
-            if (rating === 'satisfied') {
+        if (rating && rating.trim()) {
+            const ratingValue = rating.trim().toLowerCase();
+            if (ratingValue === 'satisfied') {
                 filter.rating = { $in: ['satisfied', 'very satisfied'] };
-            } else if (rating === 'dissatisfied') {
+            } else if (ratingValue === 'dissatisfied') {
                 filter.rating = { $in: ['dissatisfied', 'very dissatisfied'] };
-            } else if (rating === 'neutral') {
+            } else if (ratingValue === 'neutral') {
                 filter.rating = 'neutral';
             }
         }
@@ -369,3 +370,43 @@ function getTimeAgo(date) {
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
     return `${Math.floor(diffInSeconds / 86400)} days ago`;
 }
+
+
+// Get source distribution (chatbot vs document)
+export const getSourceDistribution = async (req, res) => {
+    try {
+        const distribution = await Feedback.aggregate([
+            {
+                $group: {
+                    _id: "$source",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        let chatbot = 0;
+        let document = 0;
+
+        distribution.forEach(item => {
+            if (item._id === 'chatbot') {
+                chatbot = item.count;
+            } else {
+                document += item.count; // Include null/undefined as document
+            }
+        });
+
+        const total = chatbot + document;
+        const chatbotPercent = total > 0 ? Math.round((chatbot / total) * 100) : 0;
+        const documentPercent = total > 0 ? Math.round((document / total) * 100) : 0;
+
+        return res.status(200).json({
+            chatbot: { count: chatbot, percent: chatbotPercent },
+            document: { count: document, percent: documentPercent },
+            total
+        });
+
+    } catch (error) {
+        console.error("Error getting source distribution:", error);
+        return res.status(500).json({ error: "Failed to get source distribution." });
+    }
+};
